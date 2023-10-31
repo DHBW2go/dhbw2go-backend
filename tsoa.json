@@ -1,0 +1,23 @@
+{
+  "entryFile": "src/backend.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/*.controller.ts"],
+  "spec": {
+    "outputDirectory": "build",
+    "specVersion": 3
+  },
+  "routes": {
+    "routesDir": "build"
+  },
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"],
+      "@controllers/*": ["./controllers/*"],
+      "@models/*": ["./models/*"],
+      "@responses/*": ["./responses/*"],
+      "@routes/*": ["./routes/*"],
+      "@services/*": ["./services/*"]
+    }
+  }
+}
