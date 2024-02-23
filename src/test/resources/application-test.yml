@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: 'jdbc:h2:mem:backend'
+    username: 'backend'
+    password: 'testing'
+    driver-class-name: 'org.h2.Driver'
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: 'org.hibernate.dialect.H2Dialect'
+youandmeme:
+  jwt:
+    cookie: 'youandmeme'
+    expiration: 3600000
+springdoc:
+  api-docs:
+    path: '/api-docs'
