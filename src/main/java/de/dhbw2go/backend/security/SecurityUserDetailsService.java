@@ -24,8 +24,7 @@ public class SecurityUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public SecurityUserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-        final User user = this.userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with email: " + email));
+        final User user = this.userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return new SecurityUserDetails(user.getEmail(), user.getPassword(), this.mapRolesToAuthorities(user.getRoles()));
     }
 

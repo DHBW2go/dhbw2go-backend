@@ -1,7 +1,6 @@
 package de.dhbw2go.backend.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -21,8 +20,7 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationEntryPoint.class);
 
     @Override
-    public void commence(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final AuthenticationException authenticationException)
-            throws IOException, ServletException {
+    public void commence(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final AuthenticationException authenticationException) throws IOException {
         JWTAuthenticationEntryPoint.logger.error("Unauthorized: {}", authenticationException.getMessage());
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

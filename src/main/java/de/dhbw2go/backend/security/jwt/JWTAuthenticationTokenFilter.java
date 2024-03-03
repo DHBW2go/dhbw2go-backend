@@ -25,15 +25,13 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
     private SecurityUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final FilterChain filterChain) throws ServletException, IOException {
         try {
             final String jwt = this.jwtHelper.getJWTFromCookies(httpServletRequest);
             if (jwt != null && this.jwtHelper.validateJWT(jwt)) {
                 final String email = this.jwtHelper.getEmailFromJWT(jwt);
                 final SecurityUserDetails securityUserDetails = this.userDetailsService.loadUserByUsername(email);
-                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(securityUserDetails, null,
-                        securityUserDetails.getAuthorities());
+                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(securityUserDetails, null, securityUserDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }

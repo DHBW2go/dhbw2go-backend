@@ -39,12 +39,6 @@ public class User {
     @Size(max = 128)
     private String password;
 
-    @NotNull
-    private int level;
-
-    @Nullable
-    private int experience;
-
     @Nullable
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
@@ -57,23 +51,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private Set<Role> roles = new HashSet<>();
-
-    public String getLevelAsString() {
-        if (level == 1) {
-            return "Novice Meme Enthusiast";
-        } else if (level == 2) {
-            return "Meme Rookie";
-        } else if (level == 3) {
-            return "Meme Connoisseur";
-        } else if (level == 4) {
-            return "Meme Trendsetter";
-        } else if (level == 5) {
-            return "Meme Master";
-        } else if (level == 6) {
-            return "Memelord";
-        }
-        return null;
-    }
 
     public void addRole(final Role role) {
         this.roles.add(role);

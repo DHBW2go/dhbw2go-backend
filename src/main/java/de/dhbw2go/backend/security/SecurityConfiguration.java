@@ -25,7 +25,6 @@ public class SecurityConfiguration {
     @Autowired
     private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable()
@@ -38,8 +37,7 @@ public class SecurityConfiguration {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/authentication/check/**", "/authentication/register", "/authentication/login").permitAll();
-                    authorizationManagerRequestMatcherRegistry.anyRequest().authenticated().and()
-                            .addFilterBefore(this.jwtAuthenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+                    authorizationManagerRequestMatcherRegistry.anyRequest().authenticated().and().addFilterBefore(this.jwtAuthenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
                 });
         return httpSecurity.build();
     }

@@ -113,8 +113,8 @@ javadoc { options.encoding = 'UTF-8' }
 
 defaultTasks 'clean', 'build', 'test'
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 group = 'de.dhbw2go.backend'
 version = '1.0-SNAPSHOT'
