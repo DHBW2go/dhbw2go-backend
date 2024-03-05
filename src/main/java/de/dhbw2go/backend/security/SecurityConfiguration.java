@@ -32,8 +32,8 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/error").permitAll();
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/api-docs").permitAll();
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/api-docs/**").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/docs").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/docs/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/authentication/check/**", "/authentication/register", "/authentication/login").permitAll();

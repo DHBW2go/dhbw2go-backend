@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'io.freefair.lombok' version '8.6'
-    id 'org.springframework.boot' version '3.2.2'
+    id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -11,29 +11,21 @@ repositories {
 }
 
 dependencies {
+    runtimeOnly group: 'com.h2database', name: 'h2', version: '2.2.224'
     runtimeOnly group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-gson', version: '0.12.5'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.2'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.2'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
-    testImplementation group: 'io.cucumber', name: 'cucumber-java', version: '7.15.0'
-    testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: '7.15.0'
-    testImplementation group: 'io.cucumber', name: 'cucumber-spring', version: '7.15.0'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.2'
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.2.2'
-    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.4.0'
-    testImplementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
-    testImplementation group: 'com.h2database', name: 'h2', version: '2.2.224'
-    testImplementation group: 'org.json', name: 'json', version: '20240205'
-
-
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.2'
 }
 
 jar {
+    enabled = false
+
     manifest {
         attributes 'Main-Class': 'de.dhbw2go.backend.Application'
     }
@@ -53,58 +45,9 @@ sourceSets {
     }
 }
 
-configurations {
-    cucumberRuntime {
-        extendsFrom testImplementation
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'de.dhbw2go.backend'
-            artifactId = 'dhbw2go-backend'
-            version = '1.0-SNAPSHOT'
-            from components.java
-
-            pom {
-                name = 'DHBW2go Backend'
-                description = 'Official Spring-Boot RestAPI for the DHBW2go service.'
-                url = 'https://api.dhbw2go.de/'
-            }
-        }
-    }
-
-/*    repositories {
-        maven {
-            credentials {
-                username = "$System.env.JB_SPACE_CLIENT_ID"
-                password = "$System.env.JB_SPACE_CLIENT_SECRET"
-            }
-
-            url = "https://maven.pkg.jetbrains.space/youandmeme/p/youandmeme/maven"
-        }
-    }*/
-}
-
-test {
-    useJUnitPlatform()
-
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-}
-
-task cucumber() {
-    dependsOn assemble, testClasses
-    doLast {
-        javaexec {
-            main = "io.cucumber.core.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = ['--plugin', 'html:reports/test-report.html', '--plugin', 'pretty',
-                    '--glue', 'de.youandmeme.backend.curcumber', 'src/test/resources/authentication', 'src/test/resources/user']
-        }
-    }
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 compileJava { options.encoding = 'UTF-8' }
@@ -112,9 +55,6 @@ compileTestJava { options.encoding = 'UTF-8' }
 javadoc { options.encoding = 'UTF-8' }
 
 defaultTasks 'clean', 'build', 'test'
-
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
 
 group = 'de.dhbw2go.backend'
 version = '1.0-SNAPSHOT'

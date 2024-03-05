@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:mysql://${MYSQL_HOSTNAME}:${MYSQL_PORT}/${MYSQL_DATABASE}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: 'com.mysql.cj.jdbc.Driver'
   jpa:
     hibernate:
@@ -17,10 +17,10 @@ spring:
       max-file-size: 10MB
 springdoc:
   api-docs:
-    path: '/api-docs'
+    path: '/docs'
   swagger-ui:
     path: '/swagger-ui'
-youandmeme:
+dhbw2go:
   jwt:
     cookie: 'dhbw2go'
     expiration: 3600000
