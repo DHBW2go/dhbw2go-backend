@@ -19,3 +19,9 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dhbw2go-backend
+          path: '${{ github.workspace }}/build/libs/*.jar'
