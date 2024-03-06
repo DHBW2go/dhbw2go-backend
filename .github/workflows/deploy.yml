@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
+        with:
+          name: dhbw2go-backend
 
       - name: Login to Azure
         uses: azure/login@v2
