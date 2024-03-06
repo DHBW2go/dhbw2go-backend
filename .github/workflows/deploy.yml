@@ -16,6 +16,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dhbw2go-backend
+          path: '${{ github.workspace }}/build/libs/*.jar'
 
       - name: Login to Azure
         uses: azure/login@v2
