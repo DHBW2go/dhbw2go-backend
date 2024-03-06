@@ -20,9 +20,9 @@ public class JWTHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTHelper.class);
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    @Value("${youandmeme.jwt.cookie}")
+    @Value("${dhbw2go.jwt.cookie}")
     private String jwtCookie;
-    @Value("${youandmeme.jwt.expiration}")
+    @Value("${dhbw2go.jwt.expiration}")
     private int jwtExpiration;
 
     public String getJWTFromCookies(final HttpServletRequest httpServletRequest) {
