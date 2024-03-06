@@ -8,24 +8,24 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/build.yml
-    deploy:
-      needs: [ build ]
-      runs-on: ubuntu-latest
-      steps:
-        - name: Download artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: dhbw2go-backend
-
-        - name: Login to Azure
-          uses: azure/login@v2
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-        - name: Deploy to Azure Web App
-          id: deploy-to-webapp
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: ${{ vars.AZURE_APP_NAME }}
-            slot-name: 'production'
-            package: '*.jar'
+  deploy:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dhbw2go-backend
+  
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ vars.AZURE_APP_NAME }}
+          slot-name: 'production'
+          package: '*.jar'
