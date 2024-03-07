@@ -7,7 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: 'org.hibernate.dialect.MySQL5Dialect'
+    database-platform: 'org.hibernate.dialect.MySQLDialect'
     properties:
       hibernate:
         current_session_context_class: 'org.springframework.orm.hibernate5.SpringSessionContext'

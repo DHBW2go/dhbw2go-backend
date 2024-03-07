@@ -8,14 +8,13 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: 'org.hibernate.dialect.H2Dialect'
+    properties:
+      hibernate:
+        current_session_context_class: 'org.springframework.orm.hibernate5.SpringSessionContext'
   servlet:
     multipart:
       max-request-size: 10MB
       max-file-size: 10MB
-youandmeme:
-  jwt:
-    cookie: 'youandmeme'
-    expiration: 3600000
 springdoc:
   api-docs:
     path: '/docs'
