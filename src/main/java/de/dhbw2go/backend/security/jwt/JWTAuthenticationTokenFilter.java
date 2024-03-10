@@ -29,8 +29,8 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
         try {
             final String jwt = this.jwtHelper.getJWTFromCookies(httpServletRequest);
             if (jwt != null && this.jwtHelper.validateJWT(jwt)) {
-                final String email = this.jwtHelper.getEmailFromJWT(jwt);
-                final SecurityUserDetails securityUserDetails = this.userDetailsService.loadUserByUsername(email);
+                final String username = this.jwtHelper.getUsernameFromJWT(jwt);
+                final SecurityUserDetails securityUserDetails = this.userDetailsService.loadUserByUsername(username);
                 final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(securityUserDetails, null, securityUserDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

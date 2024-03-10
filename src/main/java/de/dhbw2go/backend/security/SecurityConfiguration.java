@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/docs/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui/**").permitAll();
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/authentication/check/**", "/authentication/register", "/authentication/login").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/authentication/register", "/authentication/login").permitAll();
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated().and().addFilterBefore(this.jwtAuthenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
                 });
         return httpSecurity.build();
