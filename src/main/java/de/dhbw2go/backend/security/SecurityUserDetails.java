@@ -1,19 +1,29 @@
 package de.dhbw2go.backend.security;
 
+import de.dhbw2go.backend.entities.User;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class SecurityUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
+    private User user;
     private Collection<? extends GrantedAuthority> authorities;
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
 
     @Override
     public boolean isAccountNonExpired() {

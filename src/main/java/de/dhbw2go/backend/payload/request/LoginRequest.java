@@ -13,7 +13,7 @@ public class LoginRequest {
     @NotNull
     @NotBlank
     @Size(min = 4, max = 64)
-    private String email;
+    private String username;
 
     @NotNull
     @NotBlank

@@ -1,6 +1,5 @@
 package de.dhbw2go.backend.entities;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +14,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username", "email"})})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class User {
 
     @Id
@@ -23,27 +22,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
-    @NotBlank
-    @Size(max = 32)
-    private String username;
-
     @Email
     @NotNull
     @NotBlank
     @Size(max = 64)
-    private String email;
+    private String username;
 
     @NotNull
     @NotBlank
     @Size(max = 128)
     private String password;
-
-    @Nullable
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Image image;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

@@ -33,8 +33,8 @@ public class JWTHelper {
         return null;
     }
 
-    public ResponseCookie generateJWTCookie(final SecurityUserDetails userPrincipal) {
-        return ResponseCookie.from(this.jwtCookie, this.generateJWTFromEmail(userPrincipal.getUsername()))
+    public ResponseCookie generateJWTCookie(final SecurityUserDetails securityUserDetails) {
+        return ResponseCookie.from(this.jwtCookie, this.generateJWTFromUsername(securityUserDetails.getUsername()))
                 .path("/")
                 .maxAge(24 * 60 * 60)
                 .httpOnly(true)
@@ -47,7 +47,7 @@ public class JWTHelper {
                 .build();
     }
 
-    public String getEmailFromJWT(final String jwtToken) {
+    public String getUsernameFromJWT(final String jwtToken) {
         return Jwts.parser().setSigningKey(JWTHelper.key).build().parseClaimsJws(jwtToken).getBody().getSubject();
     }
 
@@ -67,7 +67,7 @@ public class JWTHelper {
         return false;
     }
 
-    public String generateJWTFromEmail(final String email) {
+    private String generateJWTFromUsername(final String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())

@@ -1,6 +1,6 @@
-name:  Build application
+name: Build application
 
-on: [pull_request, workflow_call]
+on: [ pull_request, workflow_call ]
 
 jobs:
   build:
