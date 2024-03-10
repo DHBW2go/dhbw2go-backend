@@ -56,10 +56,14 @@ public class AuthenticationController {
                 return this.roleRepository.save(role);
             }));
             this.userRepository.save(user);
-            final Pair<SecurityUserDetails, ResponseCookie> login = this.login(registerRequest.getUsername(), registerRequest.getPassword());
-            return ResponseEntity.status(HttpStatus.OK)
-                    .header(HttpHeaders.SET_COOKIE, login.getSecond().toString())
-                    .body(login.getFirst().getUser());
+            try {
+                final Pair<SecurityUserDetails, ResponseCookie> login = this.login(registerRequest.getUsername(), registerRequest.getPassword());
+                return ResponseEntity.status(HttpStatus.OK)
+                        .header(HttpHeaders.SET_COOKIE, login.getSecond().toString())
+                        .body(login.getFirst().getUser());
+            } catch (final AuthenticationException exception) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
@@ -72,7 +76,7 @@ public class AuthenticationController {
                     .header(HttpHeaders.SET_COOKIE, login.getSecond().toString())
                     .body(login.getFirst().getUser());
         } catch (final AuthenticationException exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
