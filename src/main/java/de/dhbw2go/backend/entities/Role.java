@@ -1,5 +1,6 @@
 package de.dhbw2go.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -12,6 +13,7 @@ public class Role {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private int id;
 
     @NotNull

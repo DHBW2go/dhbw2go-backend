@@ -8,19 +8,3 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: 'org.hibernate.dialect.H2Dialect'
-    properties:
-      hibernate:
-        current_session_context_class: 'org.springframework.orm.hibernate5.SpringSessionContext'
-  servlet:
-    multipart:
-      max-request-size: 10MB
-      max-file-size: 10MB
-springdoc:
-  api-docs:
-    path: '/docs'
-  swagger-ui:
-    path: '/swagger-ui'
-dhbw2go:
-  jwt:
-    cookie: 'dhbw2go'
-    expiration: 3600000

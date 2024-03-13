@@ -24,3 +24,8 @@ dhbw2go:
   jwt:
     cookie: 'dhbw2go'
     expiration: 3600000
+  openapi:
+    development:
+      url: 'http://localhost:8080/'
+    production:
+      url: 'https://api.dhbw2go.de/'
