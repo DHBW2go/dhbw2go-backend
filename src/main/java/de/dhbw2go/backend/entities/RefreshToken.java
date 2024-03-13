@@ -1,40 +1,31 @@
 package de.dhbw2go.backend.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.Instant;
+
 @Data
 @Entity
-@Table(name = "todos")
-public class ToDo {
+@Table(name = "refresh_token", uniqueConstraints = {@UniqueConstraint(columnNames = {"token"})})
+public class RefreshToken {
 
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
-    private String text;
+    @NotNull
+    private String token;
 
     @NotNull
-    private boolean done;
+    private Instant expiration;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    @JsonIgnore()
     private User user;
-
-    @Transient
-    @JsonProperty("userId")
-    private int userId() {
-        return this.user.getId();
-    }
 }

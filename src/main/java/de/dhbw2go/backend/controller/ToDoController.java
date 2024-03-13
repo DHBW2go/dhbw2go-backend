@@ -1,9 +1,9 @@
 package de.dhbw2go.backend.controller;
 
 import de.dhbw2go.backend.entities.ToDo;
-import de.dhbw2go.backend.payload.request.todo.ToDoCreateRequest;
-import de.dhbw2go.backend.repositories.ToDoRepository;
+import de.dhbw2go.backend.payload.requests.todo.ToDoCreateRequest;
 import de.dhbw2go.backend.security.SecurityUserDetails;
+import de.dhbw2go.backend.services.ToDoService;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import javax.naming.OperationNotSupportedException;
+import java.rmi.NoSuchObjectException;
 
 @RestController
 @RequestMapping("/todo")
@@ -27,7 +28,7 @@ import java.util.Optional;
 public class ToDoController {
 
     @Autowired
-    private ToDoRepository toDoRepository;
+    private ToDoService toDoService;
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(array = @ArraySchema(schema = @Schema(implementation = ToDo.class)), mediaType = "application/json")}),
@@ -36,7 +37,7 @@ public class ToDoController {
     @GetMapping(path = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ToDo[]> list(final Authentication authentication) {
         final SecurityUserDetails securityUserDetails = (SecurityUserDetails) authentication.getPrincipal();
-        final ToDo[] toDos = this.toDoRepository.findAllByUser(securityUserDetails.getUser()).toArray(new ToDo[0]);
+        final ToDo[] toDos = this.toDoService.loadToDosByUser(securityUserDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(toDos);
     }
 
@@ -47,11 +48,7 @@ public class ToDoController {
     @PutMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ToDo> create(final Authentication authentication, @Valid @RequestBody final ToDoCreateRequest toDoCreateRequest) {
         final SecurityUserDetails securityUserDetails = (SecurityUserDetails) authentication.getPrincipal();
-        final ToDo toDo = new ToDo();
-        toDo.setText(toDoCreateRequest.getText());
-        toDo.setDone(false);
-        toDo.setUser(securityUserDetails.getUser());
-        this.toDoRepository.save(toDo);
+        final ToDo toDo = this.toDoService.createToDo(securityUserDetails.getUser(), toDoCreateRequest.getText());
         return ResponseEntity.status(HttpStatus.OK).body(toDo);
     }
 
@@ -64,17 +61,14 @@ public class ToDoController {
     @PostMapping(path = "/changeStatus/{todo-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ToDo> changeStatus(final Authentication authentication, @PathVariable("todo-id") final int todoId) {
         final SecurityUserDetails securityUserDetails = (SecurityUserDetails) authentication.getPrincipal();
-        final Optional<ToDo> toDoOptional = this.toDoRepository.findById(todoId);
-        if (toDoOptional.isPresent()) {
-            final ToDo toDo = toDoOptional.get();
-            if (toDo.getUser().getId() == securityUserDetails.getUser().getId()) {
-                toDo.setDone(!toDo.isDone());
-                this.toDoRepository.save(toDo);
-                return ResponseEntity.status(HttpStatus.OK).body(toDo);
-            }
+        try {
+            final ToDo changedStatusToDo = this.toDoService.changeToDoStatus(securityUserDetails.getUser(), todoId);
+            return ResponseEntity.status(HttpStatus.OK).body(changedStatusToDo);
+        } catch (final OperationNotSupportedException exception) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (final NoSuchObjectException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ApiResponses({
@@ -83,18 +77,16 @@ public class ToDoController {
             @ApiResponse(responseCode = "403", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})
     })
-    @DeleteMapping(path = "/delete/{todo-id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/delete/{todo-id}")
     public ResponseEntity<?> remove(final Authentication authentication, @PathVariable("todo-id") final int todoId) {
         final SecurityUserDetails securityUserDetails = (SecurityUserDetails) authentication.getPrincipal();
-        final Optional<ToDo> toDoOptional = this.toDoRepository.findById(todoId);
-        if (toDoOptional.isPresent()) {
-            final ToDo toDo = toDoOptional.get();
-            if (toDo.getUser().getId() == securityUserDetails.getUser().getId()) {
-                this.toDoRepository.delete(toDo);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            }
+        try {
+            this.toDoService.deleteToDo(securityUserDetails.getUser(), todoId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (final OperationNotSupportedException exception) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (final NoSuchObjectException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

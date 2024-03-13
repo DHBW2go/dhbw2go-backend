@@ -23,7 +23,6 @@ public class User {
     private int id;
 
     @Email
-    @NotNull
     @NotBlank
     @Size(max = 64)
     private String username;

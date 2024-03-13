@@ -2,9 +2,8 @@ package de.dhbw2go.backend.controller;
 
 
 import de.dhbw2go.backend.entities.User;
-import de.dhbw2go.backend.payload.response.AuthenticationCheckResponse;
-import de.dhbw2go.backend.repositories.UserRepository;
 import de.dhbw2go.backend.security.SecurityUserDetails;
+import de.dhbw2go.backend.services.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = User.class), mediaType = "application/json")}),
@@ -37,14 +36,15 @@ public class UserController {
     }
 
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = AuthenticationCheckResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema())})
     })
-    @GetMapping(path = "/check/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthenticationCheckResponse> check(@PathVariable("username") final String username) {
-        final boolean used = this.userRepository.existsByUsername(username);
-        final AuthenticationCheckResponse authenticationCheckResponse = new AuthenticationCheckResponse(used);
-        return ResponseEntity.status(HttpStatus.OK).body(authenticationCheckResponse);
+    @GetMapping(path = "/check/{username}")
+    public ResponseEntity<?> check(@PathVariable("username") final String username) {
+        if (this.userService.checkUserByUsername(username)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 
@@ -52,11 +52,14 @@ public class UserController {
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema())})
     })
-    @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/delete")
     public ResponseEntity<?> delete(final Authentication authentication) {
         final SecurityUserDetails securityUserDetails = (SecurityUserDetails) authentication.getPrincipal();
+
         //TODO: Delete User
         //  -> Cascade delete ToDos
+        //  -> Delete RefreshToken
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
