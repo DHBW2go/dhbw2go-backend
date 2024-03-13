@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-public class ApplicationOpenAPI {
+public class OpenAPIConfiguration {
 
     @Value("${dhbw2go.openapi.development.url}")
     private String developmentURL;
