@@ -1,7 +1,8 @@
-package de.dhbw2go.backend.security;
+package de.dhbw2go.backend.configuration;
 
-import de.dhbw2go.backend.security.jwt.JWTAuthenticationEntryPoint;
-import de.dhbw2go.backend.security.jwt.JWTAuthenticationTokenFilter;
+import de.dhbw2go.backend.jwt.JWTAuthenticationEntryPoint;
+import de.dhbw2go.backend.jwt.JWTAuthenticationTokenFilter;
+import de.dhbw2go.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     @Autowired
-    private SecurityUserDetailsService securityUserDetailsService;
+    private UserService userService;
 
     @Autowired
     private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -36,7 +37,7 @@ public class SecurityConfiguration {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/docs/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui/**").permitAll();
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/user/check/**", "/authentication/register", "/authentication/login").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/user/check/**", "/authentication/register", "/authentication/login", "/authentication/refresh").permitAll();
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated().and().addFilterBefore(this.jwtAuthenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
                 });
         return httpSecurity.build();
@@ -45,7 +46,7 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationManager authenticationManagerBean(final HttpSecurity httpSecurity) throws Exception {
         final AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(this.securityUserDetailsService).passwordEncoder(this.passwordEncoder());
+        authenticationManagerBuilder.userDetailsService(this.userService).passwordEncoder(this.passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 

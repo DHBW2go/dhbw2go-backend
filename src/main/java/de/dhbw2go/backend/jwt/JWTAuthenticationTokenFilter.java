@@ -1,7 +1,7 @@
-package de.dhbw2go.backend.security.jwt;
+package de.dhbw2go.backend.jwt;
 
-import de.dhbw2go.backend.security.SecurityUserDetails;
-import de.dhbw2go.backend.security.SecurityUserDetailsService;
+import de.dhbw2go.backend.entities.User;
+import de.dhbw2go.backend.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,24 +19,28 @@ import java.io.IOException;
 public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationTokenFilter.class);
+
+    @Autowired
+    private UserService userDetailsService;
+
     @Autowired
     private JWTHelper jwtHelper;
-    @Autowired
-    private SecurityUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final FilterChain filterChain) throws ServletException, IOException {
         try {
-            final String jwt = this.jwtHelper.getJWTFromCookies(httpServletRequest);
+            final String jwt = this.jwtHelper.getJWTFromHeader(httpServletRequest);
             if (jwt != null && this.jwtHelper.validateJWT(jwt)) {
                 final String username = this.jwtHelper.getUsernameFromJWT(jwt);
-                final SecurityUserDetails securityUserDetails = this.userDetailsService.loadUserByUsername(username);
-                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(securityUserDetails, null, securityUserDetails.getAuthorities());
+                final User user = this.userDetailsService.loadUserByUsername(username);
+
+                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         } catch (final Exception exception) {
-            JWTAuthenticationTokenFilter.logger.error("Unable to set user authentication: " + exception.getMessage());
+            JWTAuthenticationTokenFilter.logger.error("Unable to set user authentication: {}", exception.getMessage());
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
