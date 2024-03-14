@@ -4,18 +4,11 @@ import de.dhbw2go.backend.entities.Role;
 import de.dhbw2go.backend.entities.User;
 import de.dhbw2go.backend.repositories.RoleRepository;
 import de.dhbw2go.backend.repositories.UserRepository;
-import de.dhbw2go.backend.security.SecurityUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -31,17 +24,21 @@ public class UserService implements UserDetailsService {
     private Role userRole;
 
     @Override
-    public SecurityUserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final User user = this.userRepository.findByUsername(username)
+    public User loadUserByUsername(final String username) throws UsernameNotFoundException {
+        return this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-        return new SecurityUserDetails(user, this.mapRolesToAuthorities(user.getRoles()));
     }
 
-    public User createUser(final String username, final String password) {
+    public User createUser(final String username, final String password, final String name, final String location, final String faculty, final String program, final String course) {
         if (!this.userRepository.existsByUsername(username)) {
             final User user = new User();
             user.setUsername(username);
             user.setPassword(UserService.B_CRYPT_PASSWORD_ENCODER.encode(password));
+            user.setName(name);
+            user.setLocation(location);
+            user.setFaculty(faculty);
+            user.setProgram(program);
+            user.setCourse(course);
             user.addRole(this.getUserRole());
             return this.userRepository.save(user);
         }
@@ -58,12 +55,28 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public boolean checkUserByUsername(final String username) {
-        return this.userRepository.existsByUsername(username);
+    public User changeUserDetails(final User user, final String name, final String location, final String faculty, final String program, final String course, final String image) {
+        if (name != null) {
+            user.setName(name);
+        }
+        if (location != null) {
+            user.setLocation(location);
+        }
+        if (faculty != null) {
+            user.setFaculty(faculty);
+        }
+        if (program != null) {
+            user.setProgram(program);
+        }
+        if (course != null) {
+            user.setCourse(course);
+        }
+        user.setImage(image);
+        return this.userRepository.save(user);
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(final Set<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getType().name())).collect(Collectors.toList());
+    public boolean checkUserByUsername(final String username) {
+        return this.userRepository.existsByUsername(username);
     }
 
     private Role getUserRole() {

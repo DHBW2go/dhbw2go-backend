@@ -1,6 +1,6 @@
-package de.dhbw2go.backend.security.jwt;
+package de.dhbw2go.backend.jwt;
 
-import de.dhbw2go.backend.security.SecurityUserDetails;
+import de.dhbw2go.backend.entities.User;
 import de.dhbw2go.backend.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,9 +32,9 @@ public class JWTAuthenticationTokenFilter extends OncePerRequestFilter {
             final String jwt = this.jwtHelper.getJWTFromHeader(httpServletRequest);
             if (jwt != null && this.jwtHelper.validateJWT(jwt)) {
                 final String username = this.jwtHelper.getUsernameFromJWT(jwt);
-                final SecurityUserDetails securityUserDetails = this.userDetailsService.loadUserByUsername(username);
+                final User user = this.userDetailsService.loadUserByUsername(username);
 
-                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(securityUserDetails, null, securityUserDetails.getAuthorities());
+                final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

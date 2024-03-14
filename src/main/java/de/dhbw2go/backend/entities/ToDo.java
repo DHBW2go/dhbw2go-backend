@@ -29,9 +29,11 @@ public class ToDo {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @NotNull
     @JsonIgnore()
     private User user;
 
+    @NotNull
     @Transient
     @JsonProperty("userId")
     private int userId() {

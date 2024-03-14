@@ -50,10 +50,16 @@ public class OpenAPIConfiguration {
         final Components components = new Components()
                 .addSecuritySchemes("Authentication with JWT", new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization")
                         .scheme("Bearer")
                         .bearerFormat("JWT")
                 );
 
-        return new OpenAPI().info(info).servers(List.of(devServer, prodServer)).components(components).security(List.of(new SecurityRequirement().addList("Authentication with JWT")));
+        return new OpenAPI()
+                .info(info)
+                .servers(List.of(devServer, prodServer))
+                .components(components)
+                .security(List.of(new SecurityRequirement().addList("Authentication with JWT")));
     }
 }

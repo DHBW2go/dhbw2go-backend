@@ -1,3 +1,5 @@
+./src/main/resources/data/
+
 ### Eclipse ###
 .metadata
 bin/
@@ -312,3 +314,6 @@ gradle-app.setting
 ### Cucumber ###
 reports/
 target/
+/src/main/resources/data/database-backend.lock.db
+/src/main/resources/data/database-backend.mv.db
+/src/main/resources/data/database-backend.trace.db

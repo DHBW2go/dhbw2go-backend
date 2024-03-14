@@ -1,7 +1,7 @@
-package de.dhbw2go.backend.security;
+package de.dhbw2go.backend.configuration;
 
-import de.dhbw2go.backend.security.jwt.JWTAuthenticationEntryPoint;
-import de.dhbw2go.backend.security.jwt.JWTAuthenticationTokenFilter;
+import de.dhbw2go.backend.jwt.JWTAuthenticationEntryPoint;
+import de.dhbw2go.backend.jwt.JWTAuthenticationTokenFilter;
 import de.dhbw2go.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

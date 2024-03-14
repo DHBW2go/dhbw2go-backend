@@ -1,4 +1,4 @@
-package de.dhbw2go.backend.security.jwt;
+package de.dhbw2go.backend.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

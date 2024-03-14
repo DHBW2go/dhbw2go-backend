@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.UUID;
 
 import java.time.Instant;
 
@@ -18,6 +19,7 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @UUID
     @NotNull
     private String token;
 
@@ -27,5 +29,6 @@ public class RefreshToken {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @NotNull
     private User user;
 }

@@ -1,10 +1,10 @@
 spring:
   datasource:
-    url: 'jdbc:h2:mem:backend'
+    url: 'jdbc:h2:file:./src/main/resources/data/database-backend;AUTO_SERVER=TRUE'
     username: 'dhbw2go'
     password: 'dhbw2go'
     driver-class-name: 'org.h2.Driver'
   jpa:
-    hibernate:
-      ddl-auto: update
     database-platform: 'org.hibernate.dialect.H2Dialect'
+  h2:
+    show-sql: true

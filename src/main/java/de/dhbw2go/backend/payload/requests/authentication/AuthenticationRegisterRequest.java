@@ -2,7 +2,6 @@ package de.dhbw2go.backend.payload.requests.authentication;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -10,10 +9,23 @@ public class AuthenticationRegisterRequest {
 
     @Email
     @NotBlank
-    @Size(min = 4, max = 64)
     private String username;
 
     @NotBlank
-    @Size(min = 4, max = 128)
     private String password;
+
+    @NotBlank
+    private String name;
+
+    @NotBlank
+    private String location;
+
+    @NotBlank
+    private String faculty;
+
+    @NotBlank
+    private String program;
+
+    @NotBlank
+    private String course;
 }

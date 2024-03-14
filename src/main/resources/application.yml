@@ -5,9 +5,9 @@ spring:
     password: ${MYSQL_PASSWORD}
     driver-class-name: 'com.mysql.cj.jdbc.Driver'
   jpa:
+    database-platform: 'org.hibernate.dialect.MySQLDialect'
     hibernate:
       ddl-auto: update
-    database-platform: 'org.hibernate.dialect.MySQLDialect'
     properties:
       hibernate:
         current_session_context_class: 'org.springframework.orm.hibernate5.SpringSessionContext'
