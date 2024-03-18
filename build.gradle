@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'io.freefair.lombok' version '8.6'
-    id 'org.springframework.boot' version '3.0.6'
+    id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -14,13 +14,14 @@ dependencies {
     runtimeOnly group: 'com.h2database', name: 'h2', version: '2.2.224'
     runtimeOnly group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-gson', version: '0.12.5'
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.3.0'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.2'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.2'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.2'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.2'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.4.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.2.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.2.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.2.3'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.2.3'
 }
 
 jar {

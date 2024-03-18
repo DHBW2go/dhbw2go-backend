@@ -26,7 +26,7 @@ public class ToDo {
     @NotNull
     private boolean done;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @NotNull
