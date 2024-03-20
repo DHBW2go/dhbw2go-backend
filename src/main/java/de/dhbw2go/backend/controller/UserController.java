@@ -63,7 +63,6 @@ public class UserController {
     @PostMapping(path = "/change-details/")
     public ResponseEntity<User> changeDetails(final Authentication authentication, @Valid @RequestBody final UserChangeDetailsRequest userChangeDetailsRequest) {
         final User user = (User) authentication.getPrincipal();
-
         this.userService.changeUserDetails(user, userChangeDetailsRequest.getName(),
                 userChangeDetailsRequest.getLocation(), userChangeDetailsRequest.getFaculty(),
                 userChangeDetailsRequest.getProgram(), userChangeDetailsRequest.getCourse(),

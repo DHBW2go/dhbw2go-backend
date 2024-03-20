@@ -2,6 +2,7 @@ package de.dhbw2go.backend.services;
 
 import de.dhbw2go.backend.entities.Role;
 import de.dhbw2go.backend.entities.User;
+import de.dhbw2go.backend.exceptions.user.UsernameNotAvailableException;
 import de.dhbw2go.backend.repositories.RoleRepository;
 import de.dhbw2go.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,10 @@ public class UserService implements UserDetailsService {
     @Override
     public User loadUserByUsername(final String username) throws UsernameNotFoundException {
         return this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username was not found: " + username));
     }
 
-    public User createUser(final String username, final String password, final String name, final String location, final String faculty, final String program, final String course) {
+    public User createUser(final String username, final String password, final String name, final String location, final String faculty, final String program, final String course) throws UsernameNotAvailableException {
         if (!this.userRepository.existsByUsername(username)) {
             final User user = new User();
             user.setUsername(username);
@@ -42,7 +43,7 @@ public class UserService implements UserDetailsService {
             user.addRole(this.getUserRole());
             return this.userRepository.save(user);
         }
-        return null;
+        throw new UsernameNotAvailableException(username);
     }
 
     public boolean changeUserPassword(final User user, final String newPassword) {

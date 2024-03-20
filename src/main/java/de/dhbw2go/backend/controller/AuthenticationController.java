@@ -4,6 +4,7 @@ import de.dhbw2go.backend.entities.RefreshToken;
 import de.dhbw2go.backend.entities.User;
 import de.dhbw2go.backend.exceptions.refreshtoken.RefreshTokenExpiredException;
 import de.dhbw2go.backend.exceptions.refreshtoken.RefreshTokenNotFoundException;
+import de.dhbw2go.backend.exceptions.user.UsernameNotAvailableException;
 import de.dhbw2go.backend.jwt.JWTHelper;
 import de.dhbw2go.backend.payload.requests.authentication.AuthenticationChangePasswordRequest;
 import de.dhbw2go.backend.payload.requests.authentication.AuthenticationLoginRequest;
@@ -61,20 +62,18 @@ public class AuthenticationController {
     @SecurityRequirements
     @PutMapping(path = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthenticationTokenResponse> register(@Valid @RequestBody final AuthenticationRegisterRequest authenticationRegisterRequest) {
-        final User user = this.userService.createUser(authenticationRegisterRequest.getUsername(), authenticationRegisterRequest.getPassword(),
-                authenticationRegisterRequest.getName(), authenticationRegisterRequest.getLocation(),
-                authenticationRegisterRequest.getFaculty(), authenticationRegisterRequest.getProgram(),
-                authenticationRegisterRequest.getCourse());
-        if (user != null) {
-            try {
-                final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationRegisterRequest.getUsername(), authenticationRegisterRequest.getPassword());
-
-                return ResponseEntity.status(HttpStatus.OK).body(authenticationTokenResponse);
-            } catch (final AuthenticationException exception) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+        try {
+            this.userService.createUser(authenticationRegisterRequest.getUsername(), authenticationRegisterRequest.getPassword(),
+                    authenticationRegisterRequest.getName(), authenticationRegisterRequest.getLocation(),
+                    authenticationRegisterRequest.getFaculty(), authenticationRegisterRequest.getProgram(),
+                    authenticationRegisterRequest.getCourse());
+            final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationRegisterRequest.getUsername(), authenticationRegisterRequest.getPassword());
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationTokenResponse);
+        } catch (final UsernameNotAvailableException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (final AuthenticationException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @ApiResponses({
@@ -88,7 +87,6 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationTokenResponse> login(@Valid @RequestBody final AuthenticationLoginRequest authenticationLoginRequest) {
         try {
             final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationLoginRequest.getUsername(), authenticationLoginRequest.getPassword());
-
             return ResponseEntity.status(HttpStatus.OK).body(authenticationTokenResponse);
         } catch (final AuthenticationException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -108,13 +106,10 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationTokenResponse> refresh(@Valid @RequestBody final AuthenticationRefreshRequest authenticationRefreshRequest) {
         try {
             final RefreshToken refreshToken = this.refreshTokenService.verifyExpiration(UUID.fromString(authenticationRefreshRequest.getRefreshToken()));
-
             final String accessToken = this.jwtHelper.generateJWT(refreshToken.getUser().getUsername());
-
             final AuthenticationTokenResponse authenticationTokenResponse = new AuthenticationTokenResponse();
             authenticationTokenResponse.setAccessToken(accessToken);
             authenticationTokenResponse.setRefreshToken(refreshToken.getToken());
-
             return ResponseEntity.status(HttpStatus.OK).body(authenticationTokenResponse);
         } catch (final RefreshTokenNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -150,7 +145,6 @@ public class AuthenticationController {
     @PostMapping(path = "/change-password", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> changePassword(final Authentication authentication, @Valid @RequestBody final AuthenticationChangePasswordRequest authenticationChangePasswordRequest) {
         final User user = (User) authentication.getPrincipal();
-
         boolean isUserPasswordChanged = this.userService.changeUserPassword(user, authenticationChangePasswordRequest.getNewPassword());
         if (isUserPasswordChanged) {
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -162,14 +156,11 @@ public class AuthenticationController {
         final Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final User user = (User) authentication.getPrincipal();
-
         final String accessToken = this.jwtHelper.generateJWT(username);
         final RefreshToken refreshToken = this.refreshTokenService.createRefreshToken(user);
-
         final AuthenticationTokenResponse authenticationTokenResponse = new AuthenticationTokenResponse();
         authenticationTokenResponse.setAccessToken(accessToken);
         authenticationTokenResponse.setRefreshToken(refreshToken.getToken());
-
         return authenticationTokenResponse;
     }
 }

@@ -1,12 +1,11 @@
-package de.dhbw2go.backend.dualis.models.overview;
+package de.dhbw2go.backend.dualis.models.semester;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class DualisOverviewCourseModel {
+public class DualisSemesterCourseModel {
 
     @NotEmpty
     private final String moduleId;
@@ -19,9 +18,6 @@ public class DualisOverviewCourseModel {
 
     @Nullable
     private final String grade;
-
-    @NotNull
-    private final boolean passed;
 
     @Nullable
     private String examsReferenceArguments;

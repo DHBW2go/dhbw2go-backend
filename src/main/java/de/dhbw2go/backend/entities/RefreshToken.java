@@ -28,7 +28,7 @@ public class RefreshToken {
     @NotNull
     private Instant expiration;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     @NotNull

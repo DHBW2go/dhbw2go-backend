@@ -41,6 +41,5 @@ public class RefreshTokenService {
             throw new RefreshTokenExpiredException(refreshToken.getToken());
         }
         throw new RefreshTokenNotFoundException(token.toString());
-
     }
 }
