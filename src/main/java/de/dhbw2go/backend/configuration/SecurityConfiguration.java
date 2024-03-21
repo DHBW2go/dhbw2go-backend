@@ -37,7 +37,9 @@ public class SecurityConfiguration {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/docs/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui").permitAll();
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/swagger-ui/**").permitAll();
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/user/check/**", "/authentication/register", "/authentication/login", "/authentication/refresh").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/user/check/**").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/authentication/register", "/authentication/login", "/authentication/refresh").permitAll();
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/dualis/cookie", "/dualis/overview", "/dualis/semesters", "/dualis/semester/**", "/dualis/exams/**").permitAll();
                     authorizationManagerRequestMatcherRegistry.anyRequest().authenticated().and().addFilterBefore(this.jwtAuthenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
                 });
         return httpSecurity.build();

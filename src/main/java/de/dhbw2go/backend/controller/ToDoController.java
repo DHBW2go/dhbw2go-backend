@@ -2,6 +2,8 @@ package de.dhbw2go.backend.controller;
 
 import de.dhbw2go.backend.entities.ToDo;
 import de.dhbw2go.backend.entities.User;
+import de.dhbw2go.backend.exceptions.todo.ToDoDifferentOwnerException;
+import de.dhbw2go.backend.exceptions.todo.ToDoNotFoundException;
 import de.dhbw2go.backend.payload.requests.todo.ToDoCreateRequest;
 import de.dhbw2go.backend.services.ToDoService;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -18,12 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.OperationNotSupportedException;
-import java.rmi.NoSuchObjectException;
-
 @RestController
 @RequestMapping("/todo")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @Tag(name = "ToDo")
 public class ToDoController {
 
@@ -72,9 +70,9 @@ public class ToDoController {
         try {
             final ToDo changedStatusToDo = this.toDoService.changeToDoStatus(user, todoId);
             return ResponseEntity.status(HttpStatus.OK).body(changedStatusToDo);
-        } catch (final OperationNotSupportedException exception) {
+        } catch (final ToDoDifferentOwnerException exception) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (final NoSuchObjectException exception) {
+        } catch (final ToDoNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -95,9 +93,9 @@ public class ToDoController {
         try {
             this.toDoService.deleteToDo(user, todoId);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (final OperationNotSupportedException exception) {
+        } catch (final ToDoDifferentOwnerException exception) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (final NoSuchObjectException exception) {
+        } catch (final ToDoNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

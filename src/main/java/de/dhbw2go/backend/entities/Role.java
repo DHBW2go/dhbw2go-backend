@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "roles", uniqueConstraints = {@UniqueConstraint(columnNames = {"type"})})
+@Table(name = "roles")
 public class Role {
 
     @Id
@@ -18,6 +18,7 @@ public class Role {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(unique = true)
     private RoleType type;
 
     public enum RoleType {
