@@ -23,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dualis")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @Tag(name = "Dualis")
 @SecurityRequirements
 public class DualisController {
@@ -39,7 +38,7 @@ public class DualisController {
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema())},
                     description = ""),
     })
-    @GetMapping(path = "/cookie", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/cookie", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DualisCookie> cookie(@Valid @RequestBody final DualisCredentialsRequest dualisCredentialsRequest) {
         return null;
     }
@@ -52,7 +51,7 @@ public class DualisController {
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema())},
                     description = ""),
     })
-    @GetMapping(path = "/overview", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DualisOverviewModel> overview(@Valid @RequestBody final DualisCookie dualisCookie) {
         return null;
     }
@@ -65,7 +64,7 @@ public class DualisController {
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema())},
                     description = ""),
     })
-    @GetMapping(path = "/semesters", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/semesters", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DualisSemesterModel>> semesters(@Valid @RequestBody final DualisCookie dualisCookie) {
         return null;
     }
@@ -78,7 +77,7 @@ public class DualisController {
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema())},
                     description = ""),
     })
-    @GetMapping(path = "/semester/{semester-reference-arguments}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/semester/{semester-reference-arguments}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DualisSemesterModel> semester(@PathVariable("semester-reference-arguments") final String semesterReferenceArguments, @Valid @RequestBody final DualisCookie dualisCookie) {
         return null;
     }
@@ -91,7 +90,7 @@ public class DualisController {
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema())},
                     description = ""),
     })
-    @GetMapping(path = "/exams/{exams-reference-arguments}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/exams/{exams-reference-arguments}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DualisExamModel>> exams(@PathVariable("exams-reference-arguments") final String examReferenceArguments, @Valid @RequestBody final DualisCookie dualisCookie) {
         return null;
     }

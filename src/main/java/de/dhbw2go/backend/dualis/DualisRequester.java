@@ -1,5 +1,6 @@
 package de.dhbw2go.backend.dualis;
 
+import de.dhbw2go.backend.exceptions.dualis.DualisRequestException;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
@@ -37,19 +38,19 @@ public class DualisRequester {
         return requestSemester(dualisCookie, null);
     }
 
-    public String requestSemester(final DualisCookie dualisCookie, final String semesterReferenceArguments) {
+    public String requestSemester(final DualisCookie dualisCookie, final String semesterReferenceArguments) throws DualisRequestException {
         return requestURL(DualisURL.SEMESTER, dualisCookie.getUserArguments(), semesterReferenceArguments, dualisCookie.buildHttpCookie());
     }
 
-    public String requestOverview(final DualisCookie dualisCookie) {
+    public String requestOverview(final DualisCookie dualisCookie) throws DualisRequestException {
         return requestURL(DualisURL.OVERVIEW, dualisCookie.getUserArguments(), null, dualisCookie.buildHttpCookie());
     }
 
-    public String requestExams(final DualisCookie dualisCookie, final String examsReferenceArguments) {
+    public String requestExams(final DualisCookie dualisCookie, final String examsReferenceArguments) throws DualisRequestException {
         return requestURL(DualisURL.EXAM, dualisCookie.getUserArguments(), examsReferenceArguments, dualisCookie.buildHttpCookie());
     }
 
-    public Pair<String, HttpCookie> requestCookie(final String username, final String password) {
+    public Pair<String, HttpCookie> requestCookie(final String username, final String password) throws DualisRequestException {
         final Map<String, String> formData = generateFormData(username, password);
         final HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://dualis.dhbw.de/scripts/mgrqispi.dll"))
@@ -64,12 +65,12 @@ public class DualisRequester {
                 return Pair.of(userArguments, httpCookie);
             }
         } catch (final IOException | InterruptedException exception) {
-            exception.printStackTrace();
+            throw new DualisRequestException(httpRequest.uri().toString());
         }
         return null;
     }
 
-    private String requestURL(final DualisURL dualisURL, final String userArguments, final String extraArguments, final HttpCookie httpCookie) {
+    private String requestURL(final DualisURL dualisURL, final String userArguments, final String extraArguments, final HttpCookie httpCookie) throws DualisRequestException {
         final HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(dualisURL.getURL(userArguments, extraArguments)))
                 .setHeader("Cookie", httpCookie.getName() + "=" + httpCookie.getValue())
@@ -79,9 +80,8 @@ public class DualisRequester {
             final HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             return httpResponse.body();
         } catch (final IOException | InterruptedException exception) {
-            exception.printStackTrace();
+            throw new DualisRequestException(httpRequest.uri().toString());
         }
-        return null;
     }
 
     private String getArguments(final HttpHeaders httpHeaders) {

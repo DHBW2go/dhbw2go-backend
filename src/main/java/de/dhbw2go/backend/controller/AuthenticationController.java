@@ -4,7 +4,7 @@ import de.dhbw2go.backend.entities.RefreshToken;
 import de.dhbw2go.backend.entities.User;
 import de.dhbw2go.backend.exceptions.refreshtoken.RefreshTokenExpiredException;
 import de.dhbw2go.backend.exceptions.refreshtoken.RefreshTokenNotFoundException;
-import de.dhbw2go.backend.exceptions.user.UsernameNotAvailableException;
+import de.dhbw2go.backend.exceptions.user.UserNameNotAvailableException;
 import de.dhbw2go.backend.jwt.JWTHelper;
 import de.dhbw2go.backend.payload.requests.authentication.AuthenticationChangePasswordRequest;
 import de.dhbw2go.backend.payload.requests.authentication.AuthenticationLoginRequest;
@@ -35,7 +35,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/authentication")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @Tag(name = "Authentication")
 public class AuthenticationController {
 
@@ -63,13 +62,13 @@ public class AuthenticationController {
     @PutMapping(path = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthenticationTokenResponse> register(@Valid @RequestBody final AuthenticationRegisterRequest authenticationRegisterRequest) {
         try {
-            this.userService.createUser(authenticationRegisterRequest.getUsername(), authenticationRegisterRequest.getPassword(),
+            this.userService.createUser(authenticationRegisterRequest.getUsername().toLowerCase(), authenticationRegisterRequest.getPassword(),
                     authenticationRegisterRequest.getName(), authenticationRegisterRequest.getLocation(),
                     authenticationRegisterRequest.getFaculty(), authenticationRegisterRequest.getProgram(),
                     authenticationRegisterRequest.getCourse());
-            final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationRegisterRequest.getUsername(), authenticationRegisterRequest.getPassword());
+            final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationRegisterRequest.getUsername().toLowerCase(), authenticationRegisterRequest.getPassword());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationTokenResponse);
-        } catch (final UsernameNotAvailableException exception) {
+        } catch (final UserNameNotAvailableException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (final AuthenticationException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -86,7 +85,7 @@ public class AuthenticationController {
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthenticationTokenResponse> login(@Valid @RequestBody final AuthenticationLoginRequest authenticationLoginRequest) {
         try {
-            final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationLoginRequest.getUsername(), authenticationLoginRequest.getPassword());
+            final AuthenticationTokenResponse authenticationTokenResponse = this.login(authenticationLoginRequest.getUsername().toLowerCase(), authenticationLoginRequest.getPassword());
             return ResponseEntity.status(HttpStatus.OK).body(authenticationTokenResponse);
         } catch (final AuthenticationException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

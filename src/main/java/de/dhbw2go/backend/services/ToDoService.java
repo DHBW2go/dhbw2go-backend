@@ -2,12 +2,12 @@ package de.dhbw2go.backend.services;
 
 import de.dhbw2go.backend.entities.ToDo;
 import de.dhbw2go.backend.entities.User;
+import de.dhbw2go.backend.exceptions.todo.ToDoDifferentOwnerException;
+import de.dhbw2go.backend.exceptions.todo.ToDoNotFoundException;
 import de.dhbw2go.backend.repositories.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.naming.OperationNotSupportedException;
-import java.rmi.NoSuchObjectException;
 import java.util.Optional;
 
 @Service
@@ -28,7 +28,7 @@ public class ToDoService {
         return this.toDoRepository.save(toDo);
     }
 
-    public ToDo changeToDoStatus(final User user, final int todoId) throws NoSuchObjectException, OperationNotSupportedException {
+    public ToDo changeToDoStatus(final User user, final int todoId) throws ToDoNotFoundException, ToDoDifferentOwnerException {
         final Optional<ToDo> toDoOptional = this.toDoRepository.findById(todoId);
         if (toDoOptional.isPresent()) {
             final ToDo toDo = toDoOptional.get();
@@ -36,12 +36,12 @@ public class ToDoService {
                 toDo.setDone(!toDo.isDone());
                 return this.toDoRepository.save(toDo);
             }
-            throw new NoSuchObjectException("User with username '" + user.getUsername() + "' does not own the ToDo with id '" + todoId + "'!");
+            throw new ToDoDifferentOwnerException(user.getName(), todoId);
         }
-        throw new NoSuchObjectException("ToDo with id " + todoId + " was not found!");
+        throw new ToDoNotFoundException(todoId);
     }
 
-    public void deleteToDo(final User user, final int todoId) throws NoSuchObjectException, OperationNotSupportedException {
+    public void deleteToDo(final User user, final int todoId) throws ToDoNotFoundException, ToDoDifferentOwnerException {
         final Optional<ToDo> toDoOptional = this.toDoRepository.findById(todoId);
         if (toDoOptional.isPresent()) {
             final ToDo toDo = toDoOptional.get();
@@ -49,8 +49,8 @@ public class ToDoService {
                 this.toDoRepository.delete(toDo);
                 return;
             }
-            throw new NoSuchObjectException("User with username '" + user.getUsername() + "' does not own the ToDo with id '" + todoId + "'!");
+            throw new ToDoDifferentOwnerException(user.getName(), todoId);
         }
-        throw new NoSuchObjectException("ToDo with id '" + todoId + "' was not found!");
+        throw new ToDoNotFoundException(todoId);
     }
 }

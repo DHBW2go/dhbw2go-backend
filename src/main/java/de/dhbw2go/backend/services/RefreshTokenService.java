@@ -23,7 +23,8 @@ public class RefreshTokenService {
     private long jwtRefreshExpiration;
 
     public RefreshToken createRefreshToken(final User user) {
-        final RefreshToken refreshToken = new RefreshToken();
+        final Optional<RefreshToken> refreshTokenOptional = this.refreshTokenRepository.findByUser(user);
+        final RefreshToken refreshToken = refreshTokenOptional.orElseGet(RefreshToken::new);
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setExpiration(Instant.now().plusMillis(this.jwtRefreshExpiration));
         refreshToken.setUser(user);
