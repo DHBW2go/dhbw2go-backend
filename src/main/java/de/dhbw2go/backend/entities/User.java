@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -30,6 +30,7 @@ public class User implements UserDetails {
 
     @Email
     @NotBlank
+    @Column(unique = true)
     private String username;
 
     @NotNull

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @Tag(name = "User")
 public class UserController {
 
@@ -63,7 +62,6 @@ public class UserController {
     @PostMapping(path = "/change-details/")
     public ResponseEntity<User> changeDetails(final Authentication authentication, @Valid @RequestBody final UserChangeDetailsRequest userChangeDetailsRequest) {
         final User user = (User) authentication.getPrincipal();
-
         this.userService.changeUserDetails(user, userChangeDetailsRequest.getName(),
                 userChangeDetailsRequest.getLocation(), userChangeDetailsRequest.getFaculty(),
                 userChangeDetailsRequest.getProgram(), userChangeDetailsRequest.getCourse(),
