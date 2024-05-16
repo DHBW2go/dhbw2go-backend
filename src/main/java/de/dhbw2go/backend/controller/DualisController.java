@@ -4,6 +4,7 @@ import de.dhbw2go.backend.dualis.DualisCookie;
 import de.dhbw2go.backend.dualis.models.exam.DualisExamModel;
 import de.dhbw2go.backend.dualis.models.overview.DualisOverviewModel;
 import de.dhbw2go.backend.dualis.models.semester.DualisSemesterModel;
+import de.dhbw2go.backend.exceptions.dualis.DualisRequestException;
 import de.dhbw2go.backend.payload.requests.dualis.DualisCredentialsRequest;
 import de.dhbw2go.backend.services.DualisService;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +42,12 @@ public class DualisController {
     })
     @PostMapping(path = "/cookie", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DualisCookie> cookie(@Valid @RequestBody final DualisCredentialsRequest dualisCredentialsRequest) {
-        return null;
+        try {
+            final DualisCookie dualisCookie = dualisService.login(dualisCredentialsRequest.getUsername(), dualisCredentialsRequest.getPassword());
+            return ResponseEntity.status(HttpStatus.OK).body(dualisCookie);
+        } catch (final DualisRequestException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @ApiResponses({
@@ -53,7 +60,12 @@ public class DualisController {
     })
     @PostMapping(path = "/overview", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<DualisOverviewModel> overview(@Valid @RequestBody final DualisCookie dualisCookie) {
-        return null;
+        try {
+            final DualisOverviewModel dualisOverviewModel = dualisService.getOverview(dualisCookie);
+            return ResponseEntity.status(HttpStatus.OK).body(dualisOverviewModel);
+        } catch (final DualisRequestException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @ApiResponses({
